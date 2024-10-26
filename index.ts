@@ -24,10 +24,10 @@ const IGNORE_LIBRARIES = [
     '/lib64/ld-linux-x86-64.so.2',
 ].concat(AWSEnvironment.libraries);
 
-const BOOTSTRAP = '#!/bin/sh\nexec ${_HANDLER}';
+const BOOTSTRAP = '#!/bin/sh\nexec ./${_HANDLER}';
 
-const NO_OUTPUT_CAPTURE: SpawnSyncOptions = {stdio: ['ignore', process.stdout, process.stderr]};
-const OUTPUT_CAPTURE: SpawnSyncOptions = {maxBuffer: 1024 * 1024 * 100};
+const NO_OUTPUT_CAPTURE: SpawnSyncOptions = { stdio: ['ignore', process.stdout, process.stderr] };
+const OUTPUT_CAPTURE: SpawnSyncOptions = { maxBuffer: 1024 * 1024 * 100 };
 
 type Custom = {
     stackBuildArgs: string[];
@@ -95,6 +95,7 @@ type ConfigSchemaHandler = {
 type ServerlessEx = Serverless & {
     configSchemaHandler: ConfigSchemaHandler;
 }
+
 
 function isHandler(func: FunctionDefinition): func is FunctionDefinitionHandler {
     return !!Object.prototype.hasOwnProperty.call(func, 'handler');
@@ -176,12 +177,12 @@ class ServerlessPlugin {
                 buildAll: true,
             },
             this.serverless.service.custom &&
-                this.serverless.service.custom.haskell ||
-                {}
+            this.serverless.service.custom.haskell ||
+            {}
         );
     }
 
-    runStack(directory: string, args: string[], options: {captureOutput?: boolean} = {}): SpawnSyncReturns<Buffer> {
+    runStack(directory: string, args: string[], options: { captureOutput?: boolean } = {}): SpawnSyncReturns<Buffer> {
         options = options || {};
         const envArgs = [];
         if (this.custom().docker) {
@@ -219,7 +220,7 @@ class ServerlessPlugin {
                 reasons.push(stderr);
             }
             const message = `Error when running Stack: ${reasons.join('; ')}\n` +
-                  `Stack command: stack ${stackArgs.join(" ")}`;
+                `Stack command: stack ${stackArgs.join(" ")}`;
             throw new ProcessError(message, result);
         }
 
@@ -227,7 +228,7 @@ class ServerlessPlugin {
     }
 
     runStackOutput(directory: string, args: string[]): string {
-        const result = this.runStack(directory, args, {captureOutput: true});
+        const result = this.runStack(directory, args, { captureOutput: true });
         return result.stdout.toString().trim();
     }
 
@@ -328,7 +329,7 @@ class ServerlessPlugin {
             // Warn when Docker is disabled
             this.serverless.cli.log(
                 "Warning: not using Docker to build. " +
-                    "The resulting binary might not match the AWS environment.");
+                "The resulting binary might not match the AWS environment.");
         }
 
         // Exclude Haskell artifacts from uploading
@@ -390,14 +391,15 @@ class ServerlessPlugin {
             const targetPath = path.resolve(this.servicePath, targetDirectory, executableName);
             copySync(executablePath, targetPath);
             this.additionalFiles.push(targetPath);
-            func.handler = targetDirectory + executableName;
+            // func.handler = targetDirectory + executableName;
+            func.handler = executableName;
 
             // Check glibc version
             const glibcVersion = this.glibcVersion(directory, executablePath);
             if (glibcVersion && version.greater(glibcVersion, AWSEnvironment.glibcVersion)) {
                 this.serverless.cli.log(
                     "Warning: glibc version required by the executable (" + version.format(glibcVersion) + ") is " +
-                        "higher than the one in AWS environment (" + version.format(AWSEnvironment.glibcVersion) + ").");
+                    "higher than the one in AWS environment (" + version.format(AWSEnvironment.glibcVersion) + ").");
                 throw new Error("glibc version mismatch.");
             }
 

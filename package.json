@@ -1,6 +1,6 @@
 {
   "name": "serverless-haskell",
-  "version": "0.12.6",
+  "version": "0.13.0",
   "description": "Deploy Haskell binaries onto AWS Lambda",
   "main": "dist/index.js",
   "files": [
@@ -19,12 +19,12 @@
   "license": "MIT",
   "dependencies": {
     "fs-extra": "^5.0.0",
-    "serverless": "^2.40.0"
+    "serverless": "^4.4.7"
   },
   "devDependencies": {
     "@types/fs-extra": "^8.1.0",
     "@types/node": "^13.9.0",
-    "@types/serverless": "^1.78.26",
+    "@types/serverless": "^3.12.22",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "eslint": "^6.8.0",

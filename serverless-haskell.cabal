@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           serverless-haskell
-version:        0.12.6
+version:        0.13.0
 synopsis:       Deploying Haskell code onto AWS Lambda using Serverless
 description:    Utilities to help process the events from AWS Lambda when deployed with the serverless-haskell plugin.
 category:       AWS, Cloud, Network
